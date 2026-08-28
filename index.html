@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimal Store</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+
+<body class="bg-gray-50 text-gray-800">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        // Mock Product Data (No Database Needed)
+        const PRODUCTS = [
+            { id: 1, name: "Minimalist Watch", price: 120, image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400" },
+            { id: 2, name: "Wireless Headphones", price: 200, image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400" },
+            { id: 3, name: "Leather Backpack", price: 150, image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400" },
+        ];
+
+        function App() {
+            const [cart, setCart] = React.useState([]);
+
+            const addToCart = (product) => {
+                setCart([...cart, product]);
+            };
+
+            const removeFromCart = (index) => {
+                setCart(cart.filter((_, i) => i !== index));
+            };
+
+            const total = cart.reduce((sum, item) => sum + item.price, 0);
+
+            return (
+                <div class="max-w-4xl mx-auto p-6">
+                    <header class="flex justify-between items-center border-b pb-4 mb-6">
+                        <h1 class="text-2xl font-bold">DevStore</h1>
+                        <span class="bg-blue-600 text-white px-3 py-1 rounded-full text-sm font-semibold">
+                            Cart: {cart.length} items (${total})
+                        </span>
+                    </header>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                        {PRODUCTS.map(product => (
+                            <div key={product.id} class="bg-white p-4 rounded-lg shadow-sm border">
+                                <img src={product.image} alt={product.name} class="w-full h-40 object-cover rounded mb-4" />
+                                <h2 class="font-bold text-lg">{product.name}</h2>
+                                <p class="text-gray-600 mb-4">${product.price}</p>
+                                <button
+                                    onClick={() => addToCart(product)}
+                                    class="w-full bg-black text-white py-2 rounded hover:bg-gray-800">
+                                    Add to Cart
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+
+                    <div class="bg-white p-6 rounded-lg shadow-sm border">
+                        <h2 class="text-xl font-bold mb-4">Your Cart</h2>
+                        {cart.length === 0 ? (
+                            <p class="text-gray-500">Your cart is empty.</p>
+                        ) : (
+                            <div>
+                                <ul class="divide-y mb-4">
+                                    {cart.map((item, index) => (
+                                        <li key={index} class="py-2 flex justify-between items-center">
+                                            <span>{item.name} - ${item.price}</span>
+                                            <button
+                                                onClick={() => removeFromCart(index)}
+                                                class="text-red-500 text-sm hover:underline">
+                                                Remove
+                                            </button>
+                                        </li>
+                                    ))}
+                                </ul>
+                                <div class="flex justify-between items-center font-bold text-lg pt-2 border-t">
+                                    <span>Total:</span>
+                                    <span>${total}</span>
+                                </div>
+                                <button
+                                    onClick={() => alert("Checkout complete! (Demo)")}
+                                    class="mt-4 w-full bg-green-600 text-white py-2 rounded hover:bg-green-700">
+                                    Checkout
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            );
+        }
+
+        ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+    </script>
+</body>
+
+</html>
